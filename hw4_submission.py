@@ -59,6 +59,22 @@ class Traveler:
 
 
     def book_trip(self, travel_provider_obj, trip_request):
+        for trip, info in trip_request.items():
+            num_seats = info["num_seats"]
+            first_class = info["first_class"]
+        
+        cost = travel_provider_obj.calculate_trip_cost(self, trip, num_seats, first_class)
+
+        if self.credits < cost:
+            return False
+        if travel_provider_obj.process_trip_request(trip_request) == False:
+            return False
+        
+        if travel_provider_obj.process_trip_request(trip_request):
+            travel_provider_obj.accept_payment(cost)
+            self.trip_history.append()
+        
+        return True
         '''
         ARGUMENTS: 
             self: the current Traveler object
@@ -72,6 +88,10 @@ class Traveler:
         pass
     
     def view_trip_history(self):
+        if self.trip_history == []:
+            return f"{self.name} has no trips booked yet."
+        else:
+            print self.trip_history
         '''
         ARGUMENTS:
             self: the current Traveler object
