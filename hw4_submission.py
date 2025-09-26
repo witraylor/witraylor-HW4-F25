@@ -1,7 +1,7 @@
 # SI 201 HW4
-# Your name: 
-# Your student id:
-# Your email:
+# Your name: Willow Traylor
+# Your student id: 67975434
+# Your email: wtraylor@umich.edu
 # Who or what you worked with on this homework (including generative AI like ChatGPT):
 # If you worked with generative AI also add a statement for how you used it.  
 # e.g.: 
@@ -154,6 +154,13 @@ class TravelProvider:
 
     
     def calculate_trip_cost(self, trip_obj, num_seats, first_class, traveler_obj):
+        cost = trip_obj.price * num_seats
+
+        if first_class:
+            cost *= 1.5
+        
+        if traveler_obj.provider_id == self.provider_id:
+            cost *= .8
         '''
         ARGUMENTS: 
             self: the current object
@@ -176,6 +183,10 @@ class TravelProvider:
 
 
     def add_seats(self, trip_obj, num_seats):
+        if trip_obj not in self.capacity:
+            self.capacity[trip_obj] = num_seats
+        else:
+            self.capacity[trip_obj] += num_seats
         ''' 
         ARGUMENTS: 
             self: the current object
