@@ -67,12 +67,11 @@ class Traveler:
 
         if self.credits < cost:
             return False
+        
         if travel_provider_obj.process_trip_request(trip_request) == False:
             return False
         
-        if travel_provider_obj.process_trip_request(trip_request):
-            travel_provider_obj.accept_payment(cost)
-            self.trip_history.append()
+        self.trip_history.append({"trip" : trip, "num_seats" : num_seats, "first_class" : first_class, "cost" : cost})
         
         return True
         '''
@@ -91,7 +90,11 @@ class Traveler:
         if self.trip_history == []:
             return f"{self.name} has no trips booked yet."
         else:
-            print self.trip_history
+            print(f"Trip history for {self.name}: ")
+            
+            for i in range(1,(len(self.trip_history)+1)):
+                print(f"Trip {i}")
+                print(self.trip_history[i])
         '''
         ARGUMENTS:
             self: the current Traveler object
