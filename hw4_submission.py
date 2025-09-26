@@ -161,6 +161,8 @@ class TravelProvider:
         
         if traveler_obj.provider_id == self.provider_id:
             cost *= .8
+        
+        return cost
         '''
         ARGUMENTS: 
             self: the current object
@@ -187,6 +189,8 @@ class TravelProvider:
             self.capacity[trip_obj] = num_seats
         else:
             self.capacity[trip_obj] += num_seats
+        
+        return None
         ''' 
         ARGUMENTS: 
             self: the current object
@@ -201,6 +205,15 @@ class TravelProvider:
 
 
     def process_trip_request(self, trip_request):
+        for trip, info in trip_request.items():
+            if info["num_seats"] >= self.capacity[trip]:
+                return False
+        
+        for trip, info in trip_request.items():
+            self.capacity["num_seats"] -= info["num_seats"]
+            
+        return True     
+        
         '''
         ARGUMENTS: 
             self: the current object
