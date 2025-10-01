@@ -114,29 +114,53 @@ class TestAllMethods(unittest.TestCase):
         jetsetter_journeys.add_seats(self.taxi, 15)
 
         # Scenario 1: traveler doesn't have enough credits in their account
-        # TODO
+        self.assertEqual(
+            pam.book_trip(jetsetter_journeys, {
+                self.airplane: {
+                    "num_seats": 5,
+                    "first_class": True
+                }}
+            ),
+            False
+        )
     
     # Check the book_trip method for traveler scenario 2
     def test_traveler_book_trip_2(self):
-        pam = Traveler(name='Pam', provider_id=19)
+        pam = Traveler(name='Pam', provider_id=19, credits = 100000) #Ensure that cost is not the reason behind the False return
         jetsetter_journeys = TravelProvider(name="Jetsetter Journeys", provider_id=14)
 
         jetsetter_journeys.add_seats(self.airplane, 10)
         jetsetter_journeys.add_seats(self.taxi, 15)
 
-        # Scenario 2: travel provicer doesn't have enough seats left
-        # TODO
+        # Scenario 2: travel provider doesn't have enough seats left
+        self.assertEqual(
+            pam.book_trip(jetsetter_journeys, {
+                self.airplane: {
+                    "num_seats": 11,
+                    "first_class": False
+                }}
+            ),
+            False
+        )
     
     # Check the book_trip method for traveler
     def test_traveler_book_trip_3(self):
-        pam = Traveler(name='Pam', provider_id=19)
+        pam = Traveler(name='Pam', provider_id=19, credits = 1000000) #Ensure that cost is not the reason behind the False return
         jetsetter_journeys = TravelProvider(name="Jetsetter Journeys", provider_id=14)
 
         jetsetter_journeys.add_seats(self.airplane, 10)
         jetsetter_journeys.add_seats(self.taxi, 15)
 
         # Scenario 3: travel provider doesn't offer that trip type
-        # TODO
+        self.assertEqual(
+            pam.book_trip(jetsetter_journeys, {
+                self.bus: {
+                    "num_seats": 1,
+                    "first_class": False
+                }}
+            ),
+            False
+        )
     
     def test_traveler_view_trip_history(self):
         pam = Traveler(name='Pam', provider_id=19)
