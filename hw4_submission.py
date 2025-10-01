@@ -63,7 +63,7 @@ class Traveler:
             num_seats = info["num_seats"]
             first_class = info["first_class"]
         
-        cost = travel_provider_obj.calculate_trip_cost(self, trip, num_seats, first_class)
+        cost = travel_provider_obj.calculate_trip_cost(trip, num_seats, first_class, self)
 
         if self.credits < cost:
             return False
@@ -71,8 +71,15 @@ class Traveler:
         if travel_provider_obj.process_trip_request(trip_request) == False:
             return False
         
-        self.trip_history.append({"trip" : trip, "num_seats" : num_seats, "first_class" : first_class, "cost" : cost})
-        
+        self.credits -= cost
+        travel_provider_obj.accept_payment(cost)
+        self.trip_history.append({
+            "provider": travel_provider_obj.name,
+            "trip": trip,
+            "num_seats": num_seats,
+            "first_class": first_class,
+            "cost": cost
+        })
         return True
         '''
         ARGUMENTS: 
@@ -84,17 +91,28 @@ class Traveler:
 
         RETURNS: a Boolean value (True or False)
         '''
-        pass
     
     def view_trip_history(self):
         if self.trip_history == []:
-            return f"{self.name} has no trips booked yet."
-        else:
-            print(f"Trip history for {self.name}: ")
-            
-            for i in range(1,(len(self.trip_history)+1)):
-                print(f"Trip {i}")
-                print(self.trip_history[i])
+            print(f"{self.name} has no trips booked yet.")
+        
+        output = [f"Trip history for {self.name}:"]
+        i = 1    
+        for trip in self.trip_history:
+            provider = trip["provider"]
+            trip_type = trip["trip"].type
+            num_seats = trip["num_seats"]
+            first_class = "Yes" if trip["first_class"] else "No"
+            cost = trip["cost"]
+
+            output.append(
+            f"Trip {i}\n"
+            f"Provider: {provider}\n"
+            f"Total Cost: {cost}\n"
+            f"{trip_type}: (Number of Seats: {num_seats}, First Class: {first_class})"
+            )
+            i += 1
+        return "\n\n".join(output)
         '''
         ARGUMENTS:
             self: the current Traveler object
@@ -102,7 +120,6 @@ class Traveler:
         RETURNS: None
 
         '''
-        pass
 
 
 
@@ -204,8 +221,6 @@ class TravelProvider:
 
         EXTRA CREDIT: If the traveler works for the travel provider, then they receive a 20% discount on the trip. They also still pay the 50% surcharge for first class requests before the discount is applied.
         '''
-        pass
-
 
     def add_seats(self, trip_obj, num_seats):
         if trip_obj not in self.capacity:
@@ -224,16 +239,15 @@ class TravelProvider:
         
         RETURNS: None
         '''
-        pass
 
 
     def process_trip_request(self, trip_request):
         for trip, info in trip_request.items():
-            if info["num_seats"] >= self.capacity[trip]:
+            if trip not in self.capacity or info["num_seats"] > self.capacity[trip]:
                 return False
         
         for trip, info in trip_request.items():
-            self.capacity["num_seats"] -= info["num_seats"]
+            self.capacity[trip] -= info["num_seats"]
             
         return True     
         
@@ -245,4 +259,4 @@ class TravelProvider:
 
         RETURNS: a Boolean value (True or False)
         '''
-        pass
+
